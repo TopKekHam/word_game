@@ -1768,7 +1768,7 @@ let ShowCurrentWord = (word) => {
 
 let SetScore = (new_score) => {
     score = new_score;
-    window.localStorage.getItem("score", JSON.stringify(score));
+    window.localStorage.setItem("score", JSON.stringify(score));
     ids["score_text"].innerHTML = `Score: ${score}`;
 }
 
