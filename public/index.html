@@ -17,6 +17,10 @@
         flex-direction: column;
     }
 
+    input {
+        border: none;
+    }
+
     .border {
         border: 1px solid black;
         background: white;
@@ -51,7 +55,7 @@
     .text-input {
         height: 2.75rem;
         margin: 1rem;
-        width: 100%;
+        width: 90vw;
     }
 
     .container {
@@ -67,7 +71,7 @@
     }
 
     .wrapper {
-        width: 800px;
+        width: 900px;
         display: flex;
         justify-content: center;
         flex-direction: row;
@@ -91,14 +95,44 @@
         width: 100%;
     }
 
-    @media screen and (max-width: 800px) {
-        .wrapper {
-            width: 100vw;
-            flex-direction: column;
+    .underline {
+        border-bottom: 3px solid black;
+    }
+
+    #wwb_b {
+        width: 4rem;
+    }
+
+    .hint_word {
+        font-size: 5rem;
+        height: 5rem;
+        margin: 1rem;
+    }
+
+    .wrapper2 {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    @media screen and (max-width: 600px) {
+        .hint_word {
+            font-size: 2rem;
+            height: auto;
         }
 
         .text-input {
-            width: auto;
+            width: 80vw;
+        }
+
+        .wrapper {
+            flex-direction: column;
+        }
+    }
+
+    @media screen and (max-width: 900px) {
+        .wrapper {
+            width: 100vw;
         }
     }
 
@@ -108,9 +142,20 @@
 
     <div class="top-padding"></div>
 
-    <div view="main" class="wrapper">
-        <div><p id="ggw_b" class="text border button">Generate Guess Word</p></div>
-        <div><p id="whw_b" class="text border button">Write Hint Word</p></div>
+    <div view="main">
+        <div class="column">
+            <div class="wrapper">
+                <div><p id="ggw_b" class="text border button">Generate Guess Word</p></div>
+                <div><p id="whw_b" class="text border button">Write Hint Word</p></div>
+            </div>
+            <div>
+                <div class="row">
+                    <div><p id="score_add_b" class="button border text">+</p></div>
+                    <div><p id="score_sub_b" class="button border text">-</p></div>
+                </div>
+                <div><p id="score_text" class="button border text">Score: 0</p></div>
+            </div>
+        </div>
     </div>
     
     <div view="generate_word" class="wrapper">
@@ -120,14 +165,14 @@
                 <div><p id="saffle_b" class="text button border">shuffle</p></div>
             </div>
 
-            <div id="generated_word"><p id="saffle_word_text" class="text"></p></div>
+            <div id="generated_word"><p id="saffle_word_text" class="hint_word text"></p></div>
         </div>
     </div>
     
     <div view="write_word" class="wrapper">
-        <div class="wrapper">
+        <div class="column">
             <div><p id="wwb_b" class="button border text">Back</p></div>
-            <input type="text" class="text-input text border" placeholder="">
+            <input type="text" class="text-input text underline hint_word" placeholder="">
         </div>
     </div>
 
@@ -1668,6 +1713,8 @@ let current_word_id = 0;
 let shuffling = false;
 let shuffle_int;
 
+let score = 0;
+
 let GetRandomInt = (max) => {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -1719,6 +1766,12 @@ let ShowCurrentWord = (word) => {
     saffle_word_text.innerHTML = word;
 }
 
+let SetScore = (new_score) => {
+    score = new_score;
+    window.localStorage.getItem("score", JSON.stringify(score));
+    ids["score_text"].innerHTML = `Score: ${score}`;
+}
+
 let Toggleshuffle = () => {
 
     if(shuffling)
@@ -1751,6 +1804,16 @@ let Main = () => {
     Onclick(ids["wwb_b"], ShowView.bind(null, views, "main"));
 
     Onclick(ids["saffle_b"],Toggleshuffle);
+
+    Onclick(ids["score_add_b"], () => SetScore(score + 1));
+    Onclick(ids["score_sub_b"], () => SetScore(score - 1));
+
+    let local_score = window.localStorage.getItem("score");
+
+    if(local_score) {
+        SetScore(JSON.parse(local_score));
+    }
+
 }
 
 Main();
